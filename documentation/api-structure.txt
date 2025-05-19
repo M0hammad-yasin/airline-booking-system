@@ -1,0 +1,235 @@
+API Structure
+Authentication Endpoints
+
+Register User
+
+URL: /api/v1/auth/register
+Method: POST
+Body:
+json{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password123"
+}
+
+Response: Returns JWT token for authenticated requests
+
+
+Login User
+
+URL: /api/v1/auth/login
+Method: POST
+Body:
+json{
+  "email": "john@example.com",
+  "password": "password123"
+}
+
+Response: Returns JWT token for authenticated requests
+
+
+Get Current User
+
+URL: /api/v1/auth/me
+Method: GET
+Auth: Required
+Response: Returns current user details
+
+
+
+Flight Endpoints
+
+Search Flights
+
+URL: /api/v1/flights
+Method: GET
+Query Parameters:
+
+departureCity - Filter by departure city
+arrivalCity - Filter by arrival city
+departureDate - Filter by departure date (YYYY-MM-DD)
+
+
+Auth: Not required
+Response: Returns list of flights matching criteria
+
+
+Get Single Flight
+
+URL: /api/v1/flights/:id
+Method: GET
+Auth: Not required
+Response: Returns details of specific flight
+
+
+Create Flight (Admin only)
+
+URL: /api/v1/flights
+Method: POST
+Auth: Required (Admin)
+Body:
+json{
+  "flightNumber": "AA123",
+  "airline": "American Airlines",
+  "departureCity": "New York",
+  "arrivalCity": "London",
+  "departureTime": "2025-06-01T08:00:00Z",
+  "arrivalTime": "2025-06-01T20:00:00Z",
+  "price": 599.99,
+  "availableSeats": 180
+}
+
+Response: Returns created flight
+
+
+Update Flight (Admin only)
+
+URL: /api/v1/flights/:id
+Method: PUT
+Auth: Required (Admin)
+Body: Same as create with updated fields
+Response: Returns updated flight
+
+
+Delete Flight (Admin only)
+
+URL: /api/v1/flights/:id
+Method: DELETE
+Auth: Required (Admin)
+Response: Success message
+
+
+
+Booking Endpoints
+
+Get User Bookings
+
+URL: /api/v1/bookings
+Method: GET
+Auth: Required
+Response: Returns list of user's bookings
+
+
+Get Single Booking
+
+URL: /api/v1/bookings/:id
+Method: GET
+Auth: Required
+Response: Returns details of specific booking
+
+
+Create Booking
+
+URL: /api/v1/bookings
+Method: POST
+Auth: Required
+Body:
+json{
+  "flight": "60d21b4667d0d8992e610c85", // Flight ID
+  "passengers": [
+    {
+      "name": "John Doe",
+      "email": "john@example.com",
+      "passportNumber": "AB1234567"
+    },
+    {
+      "name": "Jane Doe",
+      "email": "jane@example.com",
+      "passportNumber": "CD7654321"
+    }
+  ]
+}
+
+Response: Returns created booking with total price
+
+
+Cancel Booking
+
+URL: /api/v1/bookings/:id/cancel
+Method: PUT
+Auth: Required
+Response: Returns updated booking with cancelled status
+
+
+
+Payment Endpoints
+
+Process Payment
+
+URL: /api/v1/payments
+Method: POST
+Auth: Required
+Body:
+json{
+  "bookingId": "60d21b4667d0d8992e610c86",
+  "paymentMethod": "credit_card" // Options: credit_card, debit_card, paypal
+}
+
+Response: Returns payment details with transaction ID
+
+
+Get Payment History
+
+URL: /api/v1/payments
+Method: GET
+Auth: Required
+Response: Returns list of user's payments
+
+
+Get Single Payment
+
+URL: /api/v1/payments/:id
+Method: GET
+Auth: Required
+Response: Returns details of specific payment
+
+
+
+Check-In Endpoints
+
+Perform Check-In
+
+URL: /api/v1/check-in/:id (booking ID)
+Method: PUT
+Auth: Required
+Response: Returns updated booking with check-in status
+
+
+Get Check-In Status
+
+URL: /api/v1/check-in/:id (booking ID)
+Method: GET
+Auth: Required
+Response: Returns check-in status and flight details
+
+
+
+Implementation Notes
+
+Authentication System:
+
+Uses JWT (JSON Web Token) for authentication
+Token must be included in the Authorization header as Bearer <token> for protected endpoints
+Includes role-based authorization for admin-specific endpoints
+
+
+Error Handling:
+
+Consistent error responses across all endpoints
+Detailed error messages help identify issues
+
+
+Data Models:
+
+User: Stores user account information
+Flight: Contains flight details like departure/arrival times, cities, price
+Booking: Links users with flights and passengers
+Payment: Records payment information for bookings
+
+
+Business Logic:
+
+Flight seat availability is checked and updated during booking
+Booking requires payment to be confirmed
+Check-in is only available within 24 hours of departure
+Cancellation restores available seats for the flight

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - SkyWay Airlines</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <nav class="bg-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="text-2xl font-bold">SkyWay Airlines</div>
+            <div class="hidden md:flex space-x-6">
+                <a href="index.html" class="hover:text-blue-200">Home</a>
+                <a href="flights.html" class="hover:text-blue-200">Flights</a>
+                <a href="bookings.html" class="hover:text-blue-200">My Bookings</a>
+            </div>
+            <div class="flex space-x-4">
+                <a href="login.html" class="hover:text-blue-200" id="loginBtn">Login</a>
+                <a href="register.html" class="hover:text-blue-200" id="registerBtn">Register</a>
+                <button class="hidden hover:text-blue-200" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+        <div id="authRequired" class="hidden bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
+            <p>Please <a href="login.html" class="font-bold underline">login</a> to view your bookings.</p>
+        </div>
+
+        <section id="bookingsSection" class="hidden">
+            <h2 class="text-2xl font-bold mb-6 text-blue-800">My Bookings</h2>
+            
+            <div id="bookingsContainer" class="space-y-4">
+                <!-- Bookings will be displayed here -->
+                <div class="text-center py-8 text-gray-500" id="noBookingsMessage">
+                    <p>You don't have any bookings yet.</p>
+                    <a href="index.html" class="text-blue-600 hover:text-blue-800 mt-2 inline-block">Search for flights</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Booking Details Modal -->
+        <div id="bookingDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold text-blue-800">Booking Details</h2>
+                    <button id="closeDetailsModal" class="text-gray-500 hover:text-gray-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                
+                <div id="bookingDetailsContent">
+                    <!-- Booking details will be displayed here -->
+                </div>
+                
+                <div class="mt-6 flex justify-between">
+                    <button id="checkInButton" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition duration-300 hidden">
+                        Check In
+                    </button>
+                    <button id="cancelBookingButton" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition duration-300">
+                        Cancel Booking
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-6 mt-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h3 class="text-xl font-bold">SkyWay Airlines</h3>
+                    <p class="text-gray-400">Making your journey comfortable</p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#" class="hover:text-blue-300">About Us</a>
+                    <a href="#" class="hover:text-blue-300">Contact</a>
+                    <a href="#" class="hover:text-blue-300">Terms</a>
+                    <a href="#" class="hover:text-blue-300">Privacy</a>
+                </div>
+            </div>
+            <div class="mt-4 text-center text-gray-400">
+                &copy; 2023 SkyWay Airlines. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script src="js/bookings.js"></script>
+</body>
+</html>
