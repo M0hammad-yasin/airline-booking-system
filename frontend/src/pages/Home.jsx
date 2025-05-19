@@ -24,7 +24,7 @@ import { Flight as FlightIcon, Search as SearchIcon } from '@mui/icons-material'
 
 // Sample popular destinations
 const popularDestinations = [
-  { city: 'New York', country: 'USA', image: 'https://source.unsplash.com/random/300x200/?newyork' },
+  { city: 'New York', country: 'USA', image: 'https://unsplash.com/photos/lighted-cable-bridge-near-high-rise-buildings-dVCGpKZB_E8' },
   { city: 'London', country: 'UK', image: 'https://source.unsplash.com/random/300x200/?london' },
   { city: 'Tokyo', country: 'Japan', image: 'https://source.unsplash.com/random/300x200/?tokyo' },
   { city: 'Paris', country: 'France', image: 'https://source.unsplash.com/random/300x200/?paris' },

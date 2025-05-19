@@ -1,14 +1,30 @@
 import axios from 'axios';
 
-// Set base URL for API requests
-axios.defaults.baseURL = 'http://localhost:5000';
+// Create a new Axios instance with a base URL
+const apiClient = axios.create({
+  baseURL: 'http://localhost:5000',
+});
+
+// Set up a request interceptor to include the token if available
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 // Flights API
 export const flightAPI = {
   // Get all flights with optional filters
   searchFlights: async (filters) => {
     try {
-      const response = await axios.get('/api/v1/flights', { params: filters });
+      const response = await apiClient.get('/api/v1/flights', { params: filters });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -18,7 +34,7 @@ export const flightAPI = {
   // Get single flight by ID
   getFlight: async (id) => {
     try {
-      const response = await axios.get(`/api/v1/flights/${id}`);
+      const response = await apiClient.get(`/api/v1/flights/${id}`);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -31,7 +47,7 @@ export const bookingAPI = {
   // Get all user bookings
   getUserBookings: async () => {
     try {
-      const response = await axios.get('/api/v1/bookings');
+      const response = await apiClient.get('/api/v1/bookings');
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -41,7 +57,7 @@ export const bookingAPI = {
   // Get single booking by ID
   getBooking: async (id) => {
     try {
-      const response = await axios.get(`/api/v1/bookings/${id}`);
+      const response = await apiClient.get(`/api/v1/bookings/${id}`);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -51,7 +67,7 @@ export const bookingAPI = {
   // Create a new booking
   createBooking: async (bookingData) => {
     try {
-      const response = await axios.post('/api/v1/bookings', bookingData);
+      const response = await apiClient.post('/api/v1/bookings', bookingData);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -61,7 +77,7 @@ export const bookingAPI = {
   // Cancel a booking
   cancelBooking: async (id) => {
     try {
-      const response = await axios.put(`/api/v1/bookings/${id}/cancel`);
+      const response = await apiClient.put(`/api/v1/bookings/${id}/cancel`);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -74,7 +90,7 @@ export const paymentAPI = {
   // Process a payment
   processPayment: async (paymentData) => {
     try {
-      const response = await axios.post('/api/v1/payments', paymentData);
+      const response = await apiClient.post('/api/v1/payments', paymentData);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -84,7 +100,7 @@ export const paymentAPI = {
   // Get payment history
   getPaymentHistory: async () => {
     try {
-      const response = await axios.get('/api/v1/payments');
+      const response = await apiClient.get('/api/v1/payments');
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -94,7 +110,7 @@ export const paymentAPI = {
   // Get single payment
   getPayment: async (id) => {
     try {
-      const response = await axios.get(`/api/v1/payments/${id}`);
+      const response = await apiClient.get(`/api/v1/payments/${id}`);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -107,7 +123,7 @@ export const checkInAPI = {
   // Perform check-in
   performCheckIn: async (bookingId) => {
     try {
-      const response = await axios.put(`/api/v1/check-in/${bookingId}`);
+      const response = await apiClient.put(`/api/v1/check-in/${bookingId}`);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -117,10 +133,13 @@ export const checkInAPI = {
   // Get check-in status
   getCheckInStatus: async (bookingId) => {
     try {
-      const response = await axios.get(`/api/v1/check-in/${bookingId}`);
+      const response = await apiClient.get(`/api/v1/check-in/${bookingId}`);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
     }
   },
 };
+
+// Export the apiClient instance if you need to use it directly elsewhere
+export default apiClient;

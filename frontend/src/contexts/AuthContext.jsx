@@ -1,8 +1,6 @@
 import { createContext, useState, useEffect, useContext } from 'react';
-import axios from 'axios';
-// ... existing code ...
+import apiClient from '../services/api'; // Import the new apiClient
 import { jwtDecode } from 'jwt-decode';
-// ... existing code ...
 
 const AuthContext = createContext();
 
@@ -22,9 +20,7 @@ export const AuthProvider = ({ children }) => {
         if (decoded.exp * 1000 < Date.now()) {
           logout();
         } else {
-          // Set axios default header
-          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-          // Get user data
+          // The apiClient's interceptor will handle setting the Authorization header
           fetchCurrentUser();
         }
       } catch (error) {
@@ -38,7 +34,8 @@ export const AuthProvider = ({ children }) => {
 
   const fetchCurrentUser = async () => {
     try {
-      const res = await axios.get('/api/v1/auth/me');
+      // Use apiClient for the request
+      const res = await apiClient.get('/api/v1/auth/me');
       setCurrentUser(res.data);
       setLoading(false);
     } catch (error) {
@@ -49,10 +46,11 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const res = await axios.post('/api/v1/auth/login', { email, password });
+      // Use apiClient for the request
+      const res = await apiClient.post('/api/v1/auth/login', { email, password });
       const { token } = res.data;
       localStorage.setItem('token', token);
-      setToken(token);
+      setToken(token); // This will trigger the useEffect to set the header via interceptor
       return { success: true };
     } catch (error) {
       console.error('Login error', error);
@@ -65,10 +63,11 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (name, email, password) => {
     try {
-      const res = await axios.post('/api/v1/auth/register', { name, email, password });
+      // Use apiClient for the request
+      const res = await apiClient.post('/api/v1/auth/register', { name, email, password });
       const { token } = res.data;
       localStorage.setItem('token', token);
-      setToken(token);
+      setToken(token); // This will trigger the useEffect to set the header via interceptor
       return { success: true };
     } catch (error) {
       console.error('Registration error', error);
@@ -83,7 +82,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
     setToken(null);
     setCurrentUser(null);
-    delete axios.defaults.headers.common['Authorization'];
+    // The interceptor will no longer add the Authorization header as token is null
   };
 
   const value = {
